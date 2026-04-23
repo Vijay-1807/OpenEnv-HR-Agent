@@ -1,0 +1,10 @@
+name: hr-hiring-agent
+description: >
+  A long-horizon HR hiring environment with multi-tool orchestration and 
+  context-degradation traps. The agent must cross-reference simulated CRM, 
+  calendar, and email APIs while maintaining memory state to avoid hiring 
+  blacklisted candidates. Supports 4 scenarios of escalating difficulty 
+  with composable rubric-based grading.
+version: 2.0.0
+author: Bontha Vijay
+entrypoint: src.env:HRHiringEnv
