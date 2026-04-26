@@ -310,12 +310,21 @@ class SentinelAgent:
             {"role": "system", "content": system_prompt},
             {"role": "user", "content": observation_text},
         ]
-        input_ids = self.tokenizer.apply_chat_template(
+        device = next(self.model.parameters()).device
+        raw_ids = self.tokenizer.apply_chat_template(
             messages,
             add_generation_prompt=True,
             return_tensors="pt",
         )
-        device = next(self.model.parameters()).device
+        # transformers>=4.44 may return BatchEncoding; generate() needs a Tensor.
+        if torch.is_tensor(raw_ids):
+            input_ids = raw_ids
+        elif hasattr(raw_ids, "input_ids"):
+            input_ids = raw_ids.input_ids
+        elif isinstance(raw_ids, dict) and "input_ids" in raw_ids:
+            input_ids = raw_ids["input_ids"]
+        else:
+            input_ids = torch.as_tensor(raw_ids, dtype=torch.long)
         input_ids = input_ids.to(device)
         with torch.no_grad():
             outputs = self.model.generate(
