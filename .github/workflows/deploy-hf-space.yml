@@ -1,0 +1,43 @@
+# Pushes a fresh single-commit snapshot to the Hugging Face Space on every push to main.
+# Why: HF Space git rejects large / binary blobs in normal GitHub history; an orphan snapshot stays under limits.
+# Setup: add repo secret HF_TOKEN (https://huggingface.co/settings/tokens) with write access to Spaces.
+name: Deploy Hugging Face Space
+
+on:
+  push:
+    branches: [main]
+
+concurrency:
+  group: deploy-hf-space
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    if: github.repository == 'Vijay-1807/OpenEnv-HR-Agent'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Orphan snapshot and push to Space
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+        run: |
+          set -e
+          if [ -z "${HF_TOKEN}" ]; then
+            echo "HF_TOKEN secret is not set — skipping Space deploy. Add it under Repo Settings → Secrets."
+            exit 0
+          fi
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config user.name "github-actions[bot]"
+          git checkout --orphan _hf_space_deploy
+          git add -A
+          git rm -f --cached reward_curve.png 2>/dev/null || true
+          if git diff --cached --quiet; then
+            echo "No staged files — skipping Space push."
+            exit 0
+          fi
+          MSG="Deploy ${GITHUB_SHA:0:7}"
+          git commit -m "${MSG}"
+          git remote add space "https://Vijay-1807:${HF_TOKEN}@huggingface.co/spaces/Vijay-1807/sentinelhire-hr"
+          git push space HEAD:main --force

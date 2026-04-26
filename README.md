@@ -50,6 +50,15 @@ An ambitious OpenEnv environment that simulates a complete **corporate HR ecosys
 
 **Space git limits:** Hugging Face rejects normal git pushes that include files **over ~10 MB** or certain **binaries** in the Space repo. This project keeps the Space tree small (LoRA comes from the **model** repo via `SENTINEL_ADAPTER_REPO`; tokenizer may load from the **base** Hub id if `tokenizer.json` is omitted). Training checkpoints and `reward_curve.png` stay on **GitHub / the HF model repo**, not in the Space git history.
 
+**Keep the Space app in sync with GitHub (recommended):**
+
+1. On GitHub: **Settings → Secrets and variables → Actions → New repository secret**  
+   - Name: **`HF_TOKEN`**  
+   - Value: a [Hugging Face access token](https://huggingface.co/settings/tokens) with **write** access to Spaces (and repos you push to).
+2. Every push to **`main`** runs [`.github/workflows/deploy-hf-space.yml`](.github/workflows/deploy-hf-space.yml), which force-pushes a **single clean commit** to [`spaces/Vijay-1807/sentinelhire-hr`](https://huggingface.co/spaces/Vijay-1807/sentinelhire-hr) so the Space rebuilds with the latest `app.py` and code.  
+   If `HF_TOKEN` is missing, the workflow skips deploy (add the secret once).
+3. **Manual option (Windows):** `powershell -ExecutionPolicy Bypass -File .\scripts\sync_hf_space.ps1` (after `hf auth login`).
+
 The YAML at the top of this README (`sdk: streamlit`, `app_file: app.py`) is used when Hugging Face builds a **native Streamlit** Space from the repo. The root **`Dockerfile`** runs **`streamlit run app.py`** for **Docker-based** Spaces (and is ignored by the native Streamlit builder). For the OpenEnv HTTP server only, use **`Dockerfile.openenv`**.
 
 ---
