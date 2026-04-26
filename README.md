@@ -1,10 +1,11 @@
 ---
-title: HR Hiring Agent (Long Horizon)
-emoji: 🏢
+title: SentinelHire AI
+emoji: 🛡️
 colorFrom: green
 colorTo: blue
-sdk: docker
-app_port: 7860
+sdk: streamlit
+app_file: app.py
+pinned: false
 ---
 
 # 🛡️ SentinelHire AI: Autonomous HR Hiring Agent
@@ -29,11 +30,25 @@ An ambitious OpenEnv environment that simulates a complete **corporate HR ecosys
 |----------|------|
 | 📂 **GitHub (submission)** | [github.com/Vijay-1807/OpenEnv-HR-Agent](https://github.com/Vijay-1807/OpenEnv-HR-Agent) |
 | 🤗 **LoRA weights (HF Model)** | [huggingface.co/Vijay-1807/OpenEnv-HR-Agent](https://huggingface.co/Vijay-1807/OpenEnv-HR-Agent) — upload with `scripts/publish_hf_model.ps1` (weights stay off GitHub; over GitHub single-file limit) |
-| 🤗 **HuggingFace Space** | [Deployment In Progress](https://huggingface.co/spaces/) |
+| 🤗 **Live UI (HF Space)** | Create a **Streamlit** Space from this GitHub repo (steps below). Example URL after you create it: `https://huggingface.co/spaces/Vijay-1807/sentinelhire-hr` |
 | 📓 **Training (GRPO)** | See `train_qwen_grpo.py` (Unsloth + GRPO) |
 | 📓 **Baseline Simulation** | See `train_hr_agent.ipynb` |
 | 🎬 **Demo Video** | [Watch on YouTube](https://youtube.com/) |
 | 📝 **Submission Report** | [View on HF Blog](https://huggingface.co/blog/) |
+
+### Hugging Face: model repo vs live UI
+
+- **[Your model repo](https://huggingface.co/Vijay-1807/OpenEnv-HR-Agent)** holds **files** (LoRA, tokenizer, `reward_curve.png`, model card). It does **not** run a server. “Inference Providers” staying empty is normal until you wire a provider or use a Space.
+- **A [Space](https://huggingface.co/docs/hub/spaces)** is where the **live Streamlit UI** runs: it clones the **GitHub** repo, installs `requirements.txt`, and starts `app.py`.
+
+**Create the live demo (once):**
+
+1. Open [huggingface.co/new-space](https://huggingface.co/new-space).
+2. Owner **Vijay-1807**, name e.g. **`sentinelhire-hr`**, SDK **Streamlit**, choose **Public**, then link **GitHub** → repo **`Vijay-1807/OpenEnv-HR-Agent`** (branch `main`).
+3. Under **Space settings → Repository secrets / Variables**, add variable **`SENTINEL_ADAPTER_REPO`** = **`Vijay-1807/OpenEnv-HR-Agent`** so the app downloads your LoRA from the Hub.
+4. Under **Hardware**, pick a **GPU** tier if you want **`Agent backend: llm`**. On CPU‑only hardware the app may fall back to **heuristic** or be slow when loading the base model.
+
+The YAML at the top of this README (`sdk: streamlit`, `app_file: app.py`) is what Hugging Face uses when the repo is connected as a Space. The **`Dockerfile`** in the repo is optional (e.g. for other hosts); it is not used by the Streamlit Space SDK.
 
 ---
 
