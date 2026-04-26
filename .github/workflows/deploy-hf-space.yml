@@ -25,8 +25,8 @@ jobs:
         run: |
           set -e
           if [ -z "${HF_TOKEN}" ]; then
-            echo "HF_TOKEN secret is not set — skipping Space deploy. Add it under Repo Settings → Secrets."
-            exit 0
+            echo "::error::HF_TOKEN is not set. Repo → Settings → Secrets and variables → Actions → add secret HF_TOKEN, then re-run this workflow."
+            exit 1
           fi
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git config user.name "github-actions[bot]"
@@ -34,10 +34,11 @@ jobs:
           git add -A
           git rm -f --cached reward_curve.png 2>/dev/null || true
           if git diff --cached --quiet; then
-            echo "No staged files — skipping Space push."
-            exit 0
+            echo "::error::Nothing staged after git add — check .gitignore / checkout."
+            exit 1
           fi
           MSG="Deploy ${GITHUB_SHA:0:7}"
           git commit -m "${MSG}"
           git remote add space "https://Vijay-1807:${HF_TOKEN}@huggingface.co/spaces/Vijay-1807/sentinelhire-hr"
           git push space HEAD:main --force
+          echo "::notice::Pushed to Hugging Face Space — wait for Space build, then hard-refresh the App tab."
