@@ -1,0 +1,47 @@
+ASAP: Your adapter_model.safetensors is corrupted (truncated file). It cannot be "fixed" in place.
+
+DO THIS (fastest = Colab GPU):
+
+1) Zip this whole project (or push to GitHub) so Colab can get train_qwen_grpo.py + src/.
+
+2) Open https://colab.research.google.com → Runtime → Change runtime type → GPU (T4 is OK).
+
+2b) Use the notebook colab_recover_adapter.ipynb. To unzip in Colab you MUST use a shell line:
+    !unzip -q -o hr-hiring-env.zip -d /content
+    (Writing plain "unzip ..." without ! in a Python cell causes SyntaxError.)
+
+3) In Colab, run:
+
+   !pip install -q "unsloth[colab-new] @ git+https://github.com/unslothai/unsloth.git"
+   !pip install -q trl peft accelerate bitsandbytes safetensors matplotlib datasets
+
+   (If Unsloth install fails, use the exact line from https://github.com/unslothai/unsloth )
+
+4) Upload your project folder or clone your repo, then:
+
+   %cd /content/hr-hiring-env   # adjust path
+   !python train_qwen_grpo.py
+
+5) After it finishes, in Colab Files: download the folder qwen-hr-agent-trained/ (as zip).
+
+6) On your PC: replace the old qwen-hr-agent-trained with the download.
+   Move the project OUT of OneDrive (e.g. C:\dev\hr-hiring-env) before copying.
+
+7) Verify:
+
+   python verify_lora.py
+   → must print OK
+
+   streamlit run app.py
+   → sidebar must show Agent backend: llm
+
+OPTIONAL — put weights on Hugging Face (same good folder only):
+
+   pip install huggingface_hub
+   huggingface-cli login
+
+   Then upload qwen-hr-agent-trained/* to a new model repo.
+   Locally run:
+
+   set SENTINEL_ADAPTER_REPO=YourUser/your-repo-name
+   streamlit run app.py

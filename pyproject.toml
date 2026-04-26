@@ -1,0 +1,38 @@
+
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "hr-hiring-env"
+version = "0.1.0"
+description = "SentinelHire AI: An autonomous HR Agent environment for long-horizon policy compliance."
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "openenv>=0.1.0",
+    "pydantic>=2.0.0",
+    "streamlit>=1.30.0",
+    "matplotlib>=3.8.0",
+    "torch>=2.0.0",
+    "transformers>=4.38.0",
+    "peft>=0.9.0",
+    "accelerate>=0.27.0",
+    "datasets>=2.18.0",
+    "safetensors>=0.4.0",
+    "uvicorn[standard]>=0.27.0",
+]
+
+[project.optional-dependencies]
+train = [
+    "unsloth",
+    "trl",
+    "bitsandbytes>=0.43.0",
+]
+
+[project.scripts]
+server = "server.app:main"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["src*", "server*"]

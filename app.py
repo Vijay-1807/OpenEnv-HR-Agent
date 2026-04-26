@@ -1,5 +1,6 @@
 import streamlit as st
-from src.env import HRHiringEnv
+from src import HRHiringEnv
+from src.agent import SentinelAgent
 from src.models import HRAction
 import time
 
@@ -15,14 +16,35 @@ if "obs" not in st.session_state:
     st.session_state.obs = None
 if "history" not in st.session_state:
     st.session_state.history = []
+if "agent" not in st.session_state:
+    with st.status("🧠 Awakening SentinelHire AI (Loading Model)...", expanded=True) as status:
+        st.session_state.agent = SentinelAgent()
+        ag = st.session_state.agent
+        if ag.backend == "llm":
+            status.update(label="✅ LLM agent online", state="complete", expanded=False)
+        else:
+            status.update(
+                label="✅ Protocol agent online (heuristic — fix LoRA file for full LLM)",
+                state="complete",
+                expanded=False,
+            )
+        if ag.load_error:
+            st.warning(ag.load_error)
 
 def reset_env(scenario_id):
     st.session_state.env = HRHiringEnv(scenario_id=scenario_id)
     st.session_state.obs = st.session_state.env.reset()
     st.session_state.history = []
+    if st.session_state.agent:
+        st.session_state.agent.reset_episode()
     st.rerun()
 
 st.sidebar.header("Agent Configuration")
+st.sidebar.caption(
+    "Neural policy: run `python verify_lora.py`. "
+    "If local LoRA is bad, set env `SENTINEL_ADAPTER_REPO=user/repo` or "
+    "`SENTINEL_ADAPTER_PATH=...` then restart Streamlit."
+)
 scenario_option = st.sidebar.selectbox(
     "Select Scenario",
     ["senior_python_dev", "fullstack_engineer", "ml_engineer", "devops_engineer", "lead_security_architect"]
@@ -130,6 +152,8 @@ col1, col2 = st.columns([1, 2])
 
 with col1:
     st.subheader("📊 Environment State")
+    ag = st.session_state.agent
+    st.caption(f"Agent backend: **{ag.backend}** (heuristic = no LLM until LoRA file is valid)")
     st.metric("Current Step", env._step_count, f"Max {env._scenario.max_steps}")
     st.metric("Accumulated Reward", f"{env._cumulative_reward:.2f}")
     
@@ -189,6 +213,36 @@ with col2:
     if obs.done:
         st.warning("Episode has ended. Please reset to start a new simulation.")
     else:
+        st.markdown("---")
+        st.subheader("🤖 AI Agent Control")
+        if st.session_state.agent:
+            if st.button("🚀 Let Agent Think (Trained Inference)", type="primary"):
+                with st.spinner("Agent is reasoning..."):
+                    # Prepare observation text
+                    prompt = f"Last Action Result: {obs.last_action_result}\nStep: {obs.step_number}/{obs.max_steps}\nTask: {obs.task_description}"
+                    
+                    ai_result = st.session_state.agent.get_action(prompt, env=env)
+                    
+                    # Execute in environment
+                    new_act = HRAction(
+                        action_type=ai_result["action_type"],
+                        reasoning=ai_result["reasoning"],
+                        target_candidate=ai_result.get("target_candidate"),
+                        scheduled_time=ai_result.get("scheduled_time"),
+                        memory_scratchpad=ai_result.get("memory_scratchpad") or "",
+                        confidence_score=0.85
+                    )
+                    new_obs = env.step(new_act)
+                    st.session_state.obs = new_obs
+                    st.session_state.history.append({
+                        "step": env._step_count,
+                        "action": new_act,
+                        "obs": new_obs
+                    })
+                    st.rerun()
+        else:
+            st.error("Agent not initialized.")
+
         st.markdown("---")
         st.subheader("Manual Step Injection (Demo Mode)")
         st.markdown("Inject a specific action to simulate the agent's next move.")

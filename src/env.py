@@ -319,12 +319,12 @@ class HRHiringEnv:
 
         self._cumulative_reward += step_reward
 
-        # Clamp reward to (0, 1) range for OpenEnv compatibility
-        clamped_reward = max(0.01, min(0.99, (step_reward + 2.0) / 4.0))  # map [-2, 2] -> [0, 1]
+        # Use the raw un-clamped reward so GRPO gets a strong learning signal
+        final_reward = float(step_reward)
 
         return self._make_obs(
             result=result_msg + f"\n\n[Step Reward: {step_feedback}]",
-            reward=clamped_reward,
+            reward=final_reward,
             done=self._is_done,
         )
 

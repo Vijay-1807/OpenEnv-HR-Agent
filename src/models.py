@@ -5,9 +5,14 @@ can introspect schemas, validate payloads, and serialize everything cleanly.
 """
 
 from typing import Literal, Optional, List, Dict, Any
-from pydantic import Field
-from openenv.core.env_server.types import Action, Observation, State
+from pydantic import BaseModel, Field
 
+# Standalone base types to remove openenv.core dependency
+class Action(BaseModel): pass
+class Observation(BaseModel): 
+    reward: Optional[float] = None
+    done: bool = False
+class State(BaseModel): pass
 
 # ─────────────────────────────────── Action ───────────────────────────────────
 
