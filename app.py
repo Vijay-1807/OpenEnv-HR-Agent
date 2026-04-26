@@ -153,7 +153,18 @@ col1, col2 = st.columns([1, 2])
 with col1:
     st.subheader("📊 Environment State")
     ag = st.session_state.agent
-    st.caption(f"Agent backend: **{ag.backend}** (heuristic = no LLM until LoRA file is valid)")
+    if ag.backend == "llm":
+        st.caption(
+            "Agent backend: **llm** — Qwen + LoRA loaded. "
+            "On CPU this can be slow; a GPU Space is faster for generation."
+        )
+    else:
+        hint = (
+            f" {ag.load_error}"
+            if ag.load_error
+            else " Set `SENTINEL_ADAPTER_REPO` / `SENTINEL_ADAPTER_PATH` or fix the LoRA bundle, then restart."
+        )
+        st.caption(f"Agent backend: **heuristic** (rule-based fallback).{hint}")
     st.metric("Current Step", env._step_count, f"Max {env._scenario.max_steps}")
     st.metric("Accumulated Reward", f"{env._cumulative_reward:.2f}")
     
