@@ -48,6 +48,8 @@ An ambitious OpenEnv environment that simulates a complete **corporate HR ecosys
 3. Under **Space settings → Repository secrets / Variables**, add variable **`SENTINEL_ADAPTER_REPO`** = **`Vijay-1807/OpenEnv-HR-Agent`** so the app downloads your LoRA from the Hub.
 4. Under **Hardware**, pick a **GPU** tier if you want **`Agent backend: llm`**. On CPU‑only hardware the app may fall back to **heuristic** or be slow when loading the base model.
 
+**Space git limits:** Hugging Face rejects normal git pushes that include files **over ~10 MB** or certain **binaries** in the Space repo. This project keeps the Space tree small (LoRA comes from the **model** repo via `SENTINEL_ADAPTER_REPO`; tokenizer may load from the **base** Hub id if `tokenizer.json` is omitted). Training checkpoints and `reward_curve.png` stay on **GitHub / the HF model repo**, not in the Space git history.
+
 The YAML at the top of this README (`sdk: streamlit`, `app_file: app.py`) is used when Hugging Face builds a **native Streamlit** Space from the repo. The root **`Dockerfile`** runs **`streamlit run app.py`** for **Docker-based** Spaces (and is ignored by the native Streamlit builder). For the OpenEnv HTTP server only, use **`Dockerfile.openenv`**.
 
 ---

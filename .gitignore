@@ -8,6 +8,7 @@ dist/
 build/
 .vscode/
 qwen-hr-agent-trained-old/
+qwen-hr-agent-trained/README (1).md
 src.zip
 # > GitHub 100 MB limit — publish to Hugging Face (see scripts/publish_hf_model.ps1)
 qwen-hr-agent-trained/adapter_model.safetensors
