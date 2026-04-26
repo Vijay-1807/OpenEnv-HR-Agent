@@ -11,6 +11,8 @@ git checkout main
 git branch -D $Branch 2>$null
 git checkout --orphan $Branch
 git add -A
+# HF Space git rejects some binaries (e.g. PNG) without Xet — keep curve on HF model repo only
+git rm -f --cached reward_curve.png 2>$null | Out-Null
 git commit -m "Space snapshot: SentinelHire ($(Get-Date -Format 'yyyy-MM-dd HH:mm'))"
 git push $SpaceRepo "${Branch}:main" --force
 git checkout -f main
