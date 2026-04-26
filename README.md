@@ -30,7 +30,7 @@ An ambitious OpenEnv environment that simulates a complete **corporate HR ecosys
 |----------|------|
 | 📂 **GitHub (submission)** | [github.com/Vijay-1807/OpenEnv-HR-Agent](https://github.com/Vijay-1807/OpenEnv-HR-Agent) |
 | 🤗 **LoRA weights (HF Model)** | [huggingface.co/Vijay-1807/OpenEnv-HR-Agent](https://huggingface.co/Vijay-1807/OpenEnv-HR-Agent) — upload with `scripts/publish_hf_model.ps1` (weights stay off GitHub; over GitHub single-file limit) |
-| 🤗 **Live UI (HF Space)** | Create a **Streamlit** Space from this GitHub repo (steps below). Example URL after you create it: `https://huggingface.co/spaces/Vijay-1807/sentinelhire-hr` |
+| 🤗 **Live UI (HF Space)** | [huggingface.co/spaces/Vijay-1807/sentinelhire-hr](https://huggingface.co/spaces/Vijay-1807/sentinelhire-hr) |
 | 📓 **Training (GRPO)** | See `train_qwen_grpo.py` (Unsloth + GRPO) |
 | 📓 **Baseline Simulation** | See `train_hr_agent.ipynb` |
 | 🎬 **Demo Video** | [Watch on YouTube](https://youtube.com/) |
@@ -44,11 +44,11 @@ An ambitious OpenEnv environment that simulates a complete **corporate HR ecosys
 **Create the live demo (once):**
 
 1. Open [huggingface.co/new-space](https://huggingface.co/new-space).
-2. Owner **Vijay-1807**, name e.g. **`sentinelhire-hr`**, SDK **Streamlit**, choose **Public**, then link **GitHub** → repo **`Vijay-1807/OpenEnv-HR-Agent`** (branch `main`).
+2. Owner **Vijay-1807**, name e.g. **`sentinelhire-hr`**, choose **Public**. Either **SDK → Streamlit** and link **GitHub** → **`Vijay-1807/OpenEnv-HR-Agent`** (`main`), **or** **Docker → Streamlit** template and then **Settings → connect / sync** this same GitHub repo so the Space files match (the repo `Dockerfile` runs Streamlit for Docker Spaces).
 3. Under **Space settings → Repository secrets / Variables**, add variable **`SENTINEL_ADAPTER_REPO`** = **`Vijay-1807/OpenEnv-HR-Agent`** so the app downloads your LoRA from the Hub.
 4. Under **Hardware**, pick a **GPU** tier if you want **`Agent backend: llm`**. On CPU‑only hardware the app may fall back to **heuristic** or be slow when loading the base model.
 
-The YAML at the top of this README (`sdk: streamlit`, `app_file: app.py`) is what Hugging Face uses when the repo is connected as a Space. The **`Dockerfile`** in the repo is optional (e.g. for other hosts); it is not used by the Streamlit Space SDK.
+The YAML at the top of this README (`sdk: streamlit`, `app_file: app.py`) is used when Hugging Face builds a **native Streamlit** Space from the repo. The root **`Dockerfile`** runs **`streamlit run app.py`** for **Docker-based** Spaces (and is ignored by the native Streamlit builder). For the OpenEnv HTTP server only, use **`Dockerfile.openenv`**.
 
 ---
 

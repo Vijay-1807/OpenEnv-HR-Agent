@@ -1,0 +1,8 @@
+.git
+.gitignore
+**/__pycache__
+**/*.pyc
+**/.pytest_cache
+.vscode
+qwen-hr-agent-trained-old
+src.zip
