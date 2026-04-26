@@ -19,6 +19,15 @@ foreach ($f in $files) {
     Copy-Item -Force $p (Join-Path $Bundle $f)
 }
 
+# GRPO / RL training reward curve (repo root)
+$curve = Join-Path $Root "reward_curve.png"
+if (Test-Path $curve) {
+    Copy-Item -Force $curve (Join-Path $Bundle "reward_curve.png")
+    Write-Host "Included reward_curve.png in bundle."
+} else {
+    Write-Warning "reward_curve.png not found at repo root; skipping."
+}
+
 $readme = Join-Path $Bundle "README.md"
 if (-not (Test-Path $readme)) { throw "Missing model card README at $readme" }
 
@@ -26,10 +35,7 @@ if (-not (Get-Command hf -ErrorAction SilentlyContinue)) {
     Write-Host "Install CLI: pip install -U huggingface_hub[cli]"
     exit 1
 }
-if (-not $env:HF_TOKEN) {
-    Write-Host "Set HF_TOKEN or run: hf auth login"
-    exit 1
-}
+# Credentials: `hf auth login` (cached) or env HF_TOKEN
 
 Write-Host "Uploading $Bundle to $RepoId ..."
 hf upload $RepoId $Bundle . --repo-type model

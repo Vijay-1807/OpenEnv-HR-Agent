@@ -32,6 +32,8 @@ or download this repo snapshot and point `SENTINEL_ADAPTER_PATH` at the folder c
 Trained with GRPO / Unsloth in this project (`train_qwen_grpo.py`).  
 Code: [github.com/Vijay-1807/OpenEnv-HR-Agent](https://github.com/Vijay-1807/OpenEnv-HR-Agent)
 
+Reward curve during RL training: see `reward_curve.png` in this repo.
+
 ## Limitations
 
 Inference requires a **GPU** with enough VRAM for the 4-bit base plus adapter, or a configured CPU/offload path. See the GitHub README for Streamlit setup.
