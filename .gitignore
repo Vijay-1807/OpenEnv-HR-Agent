@@ -11,6 +11,14 @@ qwen-hr-agent-trained-old/
 src.zip
 # > GitHub 100 MB limit — publish to Hugging Face (see scripts/publish_hf_model.ps1)
 qwen-hr-agent-trained/adapter_model.safetensors
+# HF Space git rejects files > ~10 MB; tokenizer loads from base_model if missing
+qwen-hr-agent-trained/tokenizer.json
+qwen-hr-agent-trained/optimizer.pt
+qwen-hr-agent-trained/scheduler.pt
+qwen-hr-agent-trained/trainer_state.json
+qwen-hr-agent-trained/training_args.bin
+qwen-hr-agent-trained/rng_state.pth
+qwen-hr-agent-trained/scaler.pt
 # Staging copies for hf upload (keep only README.md tracked)
 hf_model_bundle/*
 !hf_model_bundle/README.md

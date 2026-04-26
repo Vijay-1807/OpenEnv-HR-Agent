@@ -143,10 +143,16 @@ class SentinelAgent:
             self.tokenizer = AutoTokenizer.from_pretrained(
                 self.model_path, trust_remote_code=True
             )
-        except Exception as e:
-            self.load_error = f"Tokenizer load failed: {e}"
-            print(f"[WARN] {self.load_error}")
-            return
+        except Exception:
+            # e.g. HF Space git push limit: omit tokenizer.json and load from base Hub id
+            try:
+                self.tokenizer = AutoTokenizer.from_pretrained(
+                    self.base_model, trust_remote_code=True
+                )
+            except Exception as e:
+                self.load_error = f"Tokenizer load failed: {e}"
+                print(f"[WARN] {self.load_error}")
+                return
 
         try:
             kwargs: Dict[str, Any] = {
