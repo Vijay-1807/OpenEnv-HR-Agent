@@ -1,3 +1,5 @@
+# Runtime + Streamlit demo + LoRA inference (HF Space, local UI).
+# For GRPO / Unsloth training, also install: pip install -r requirements-train.txt
 openenv>=0.1.0
 pydantic>=2.0.0
 streamlit>=1.30.0
@@ -9,7 +11,4 @@ accelerate>=0.27.0
 datasets>=2.18.0
 safetensors>=0.4.0
 uvicorn[standard]>=0.27.0
-unsloth; sys_platform == 'linux'
-trl
 bitsandbytes>=0.46.1
-hf_transfer

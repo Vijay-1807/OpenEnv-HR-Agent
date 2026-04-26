@@ -1,0 +1,5 @@
+# Extra deps for Unsloth + GRPO training (Colab / train_qwen_grpo.py).
+-r requirements.txt
+unsloth; sys_platform == "linux"
+trl
+hf_transfer

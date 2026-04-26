@@ -31,7 +31,7 @@ An ambitious OpenEnv environment that simulates a complete **corporate HR ecosys
 | 📂 **GitHub (submission)** | [github.com/Vijay-1807/OpenEnv-HR-Agent](https://github.com/Vijay-1807/OpenEnv-HR-Agent) |
 | 🤗 **LoRA weights (HF Model)** | [huggingface.co/Vijay-1807/OpenEnv-HR-Agent](https://huggingface.co/Vijay-1807/OpenEnv-HR-Agent) — upload with `scripts/publish_hf_model.ps1` (weights stay off GitHub; over GitHub single-file limit) |
 | 🤗 **Live UI (HF Space)** | [huggingface.co/spaces/Vijay-1807/sentinelhire-hr](https://huggingface.co/spaces/Vijay-1807/sentinelhire-hr) |
-| 📓 **Training (GRPO)** | See `train_qwen_grpo.py` (Unsloth + GRPO) |
+| 📓 **Training (GRPO)** | See `train_qwen_grpo.py`; install extras with `pip install -r requirements-train.txt` |
 | 📓 **Baseline Simulation** | See `train_hr_agent.ipynb` |
 | 🎬 **Demo Video** | [Watch on YouTube](https://youtube.com/) |
 | 📝 **Submission Report** | [View on HF Blog](https://huggingface.co/blog/) |
@@ -255,6 +255,8 @@ For the 3-minute pitch, focus on the real-world stakes:
 git clone https://github.com/your-username/hr-hiring-env
 cd hr-hiring-env
 pip install -r requirements.txt
+# GRPO / Unsloth training only:
+# pip install -r requirements-train.txt
 ```
 
 ### Test the Environment
